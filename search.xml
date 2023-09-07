@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>docker入门之mysql</title>
+    <url>/2020/05/21/docker-mysql/</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer" />
+
+<p>docker火了那么久，自己在平时也常常听别人说docker怎么怎么样（假装能听懂的样子），后来还是决定自己撸起袖子就开干，因为自己平时也有练习一些小项目，断断续续的，当时解决了，后来隔断时间不用就又忘记了，俗话说好记性不如烂笔头，这次就把实践的全部记下来了，以防未来又忘记了（🤦‍♀️）</p>
+<h3 id="准备步骤"><a href="#准备步骤" class="headerlink" title="准备步骤"></a>准备步骤</h3><h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 <code>docker</code></h4><p>你要用docker，那么三部曲无外乎就是安装，编码，运行，所以我们首先来安装 <code>docker</code>。安装 <code>docker</code> 有很多种方式，网上教程也是五花八门；这里就跳过，毕竟网上一大把，贴一个菜鸟的<a href="https://www.runoob.com/docker/macos-docker-install.html">教程</a><br><code>docker</code> 安装好了，就可以使用简单的命令去查看了；常用的有：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker images  // 查看当前本地镜像</span><br><span class="line">docker pull imagename  // 获取一个新镜像</span><br><span class="line">docker search imagename  // 查找一个镜像</span><br><span class="line">docker rmi images-id  // 删除一个镜像</span><br><span class="line">docker image prune --force --all  // 删除所有不使用的镜像</span><br><span class="line">docker ps -a // 查看容器</span><br><span class="line">docker rm container-id // 删除容器</span><br><span class="line">docker stop container-id // 停止容器</span><br></pre></td></tr></table></figure>
+<p>当然还有很多 <code>docker build</code>、<code>docker run</code> 等命令，可以去查阅其具体用法</p>
+<h4 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h4><p><code>docker</code> 安装好了，我们使用命令去获取一个 <code>mysql</code> 的镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker pull mysql:5.6</span><br></pre></td></tr></table></figure>
+<p><em>note</em><br><code>:5.6</code>：表示版本<br>这个时候我们使用查看命令就可以看到该镜像已经在本地了<br><img src="https://upload-images.jianshu.io/upload_images/9217526-88f709f1aaf21113.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查看镜像.png"></p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p><code>docker</code> 安装好了，镜像也获取了，那么现在就可以基于该镜像起一个容器了</p>
+<h4 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -itd --name some-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:5.6</span><br></pre></td></tr></table></figure>
+<p><em>note</em>：</p>
+<ol>
+<li><code>-itd</code>: <code>-i</code> 以交互模式运行容器，通常与 <code>-t</code> 同时使用；<code>-t</code> 为容器重新分配一个伪输入终端，通常与 <code>-i</code> 同时使用；<code>-d</code> 后台运行容器，并返回容器ID</li>
+<li><code>--name [name]</code>：容器名称</li>
+<li><code>-p 3306:3306</code> ：映射容器服务的 <code>3306</code> 端口到宿主机的 <code>3306</code> 端口，外部主机可以直接通过 <code>宿主机ip:3306</code> 访问到 <code>mysql</code> 的服务。</li>
+<li><code>-e MYSQL_ROOT_PASSWORD=my-secret-pw</code>：设置 <code>mysql</code> 服务 <code>root</code> 用户的密码。<br>这个时候我们使用查看容器命令，就可以看见该容器已经运行起来了</li>
+<li><code>-d mysql:[version]</code>：这里指基于哪个版本的镜像来生成容器</li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-a1f30260513bac74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查看容器.png"></p>
+<h4 id="进入实例"><a href="#进入实例" class="headerlink" title="进入实例"></a>进入实例</h4><p>容器已经运行起来了，我们就可以使用命令进入到实例里</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker exec -it container-name bash</span><br></pre></td></tr></table></figure>
+<p>然后输入  <code>mysql -uroot -p</code> 输入我们刚刚设置的密码，就能正常操作数据库了</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-d131d67be14cd0a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="数据库.png"></p>
+<p>这样我们就基于官方 <code>mysql</code> 镜像，运行起了一个数据库实例，我们也可以使用其他数据库客户端去连接该数据库，不过如果你是基于最新的数据库创建的实例，连接可能会失败，说找不到<code>image not found</code>，那么你可能需要进入 <code>mysql</code> 实例去修改下密码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;%&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;root&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据初始化"><a href="#数据初始化" class="headerlink" title="数据初始化"></a>数据初始化</h3><p>虽然上面我们已经生成了数据库实例，但是在实际中，我们希望在创建实例的过程中就能初始化我们写好的 <code>sql</code> 脚本，刚好 <code>mysql</code> 的官方镜像可以支持在容器启动的时候自动执行指定的 <code>sql</code> 脚本或者 <code>shell</code> 脚本，我们能看见官方镜像中 <code>Dockerfile</code> 部分代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">COPY docker-entrypoint.sh /usr/local/bin/</span><br><span class="line">RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat</span><br><span class="line">ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]</span><br><span class="line"></span><br><span class="line">EXPOSE 3306</span><br><span class="line">CMD [&quot;mysqld&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>很明显里面已经设定了 <code>ENTRYPOINT</code>，会调用 <code>/entrypoint.sh</code> 这个脚本，脚本其中一段内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo</span><br><span class="line">  for f in /docker-entrypoint-initdb.d/*; do</span><br><span class="line">  case &quot;$f&quot; in</span><br><span class="line">    *.sh)     echo &quot;$0: running $f&quot;; . &quot;$f&quot; ;;</span><br><span class="line">    *.sql)    echo &quot;$0: running $f&quot;; &quot;$&#123;mysql[@]&#125;&quot; &lt; &quot;$f&quot;; echo ;;</span><br><span class="line">    *.sql.gz) echo &quot;$0: running $f&quot;; gunzip -c &quot;$f&quot; | &quot;$&#123;mysql[@]&#125;&quot;; echo ;;</span><br><span class="line">    *)        echo &quot;$0: ignoring $f&quot; ;;</span><br><span class="line">  esac</span><br><span class="line">  echo</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>说的是会遍历 <code>docker-entrypoint-initdb.d</code> 目录下所有的 <code>.sh</code> 和 <code>.sql</code> 后缀的文件并执行。所以我们的思路是将数据库初始化脚本拷贝到 <code>docker-entrypoint-initdb.d</code> 目录下。那么接下来我们就编写 <code>Dockerfile</code> 文件</p>
+<ul>
+<li><p><code>Dockerfile</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#基础镜像使用 mysql:5.6</span><br><span class="line">FROM mysql:5.6</span><br><span class="line"></span><br><span class="line">#作者</span><br><span class="line">MAINTAINER cc &lt;813659813@qq.com&gt;</span><br><span class="line"></span><br><span class="line">#定义工作目录</span><br><span class="line">ENV WORK_PATH /usr/local/work</span><br><span class="line"></span><br><span class="line">#定义会被容器自动执行的目录</span><br><span class="line">ENV AUTO_RUN_DIR /docker-entrypoint-initdb.d</span><br><span class="line"></span><br><span class="line">#定义sql文件名</span><br><span class="line">ENV FILE_0 init_table.sql </span><br><span class="line">ENV FILE_1 init_data.sql</span><br><span class="line"></span><br><span class="line">#定义shell文件名</span><br><span class="line">ENV INSTALL_DB_SHELL init_db.sh</span><br><span class="line"></span><br><span class="line">#创建文件夹</span><br><span class="line">RUN mkdir -p $WORK_PATH</span><br><span class="line"></span><br><span class="line">#把数据库初始化数据的文件复制到工作目录下</span><br><span class="line">COPY ./$FILE_0 $WORK_PATH/</span><br><span class="line">COPY ./$FILE_1 $WORK_PATH/</span><br><span class="line"></span><br><span class="line">#把要执行的sql文件放到/docker-entrypoint-initdb.d/目录下，容器会自动执行这个sql</span><br><span class="line">COPY ./$INSTALL_DB_SHELL $AUTO_RUN_DIR/</span><br><span class="line"></span><br><span class="line">#给执行文件增加可执行权限</span><br><span class="line">RUN chmod a+x $AUTO_RUN_DIR/$INSTALL_DB_SQL</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>init_db.sh</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">mysql -uroot -p$MYSQL_ROOT_PASSWORD &lt;&lt; EOF</span><br><span class="line">source $WORK_PATH/$FILE_0;</span><br><span class="line">source $WORK_PATH/$FILE_1;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>init_table.sql</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE IF NOT EXISTS test;</span><br><span class="line"></span><br><span class="line">use test;</span><br><span class="line"></span><br><span class="line">CREATE TABLE IF NOT EXISTS user (</span><br><span class="line">  id INT NOT NULL AUTO_INCREMENT,</span><br><span class="line">  account VARCHAR(32) NOT NULL,</span><br><span class="line">  password VARCHAR(32) NOT NULL,</span><br><span class="line">  openId VARCHAR(100) DEFAULT NULL,</span><br><span class="line">  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,</span><br><span class="line">  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,</span><br><span class="line">  PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>init_data.sql</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO user (account, password) values (&#x27;admin&#x27;, &#x27;123456&#x27;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="生成镜像"><a href="#生成镜像" class="headerlink" title="生成镜像"></a>生成镜像</h4><p>文件编写好了，我们就能基于该 <code>Dockerfile</code> 构建一个镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker build -t init_mysql .</span><br></pre></td></tr></table></figure>
+<p><em>note</em>:  </p>
+<ol>
+<li><code>-t </code>：镜像名，可跟上版本，eg <code>init_mysql:0.0.1</code></li>
+<li><code>.</code>： 表示 <code>Dockerfile</code> 在当前路径下</li>
+<li>更多命令可以使用 docker build –help 查看<br>这时就能查看到我们刚刚生成了镜像了</li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-f90c4c21ba809398.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="镜像.png"></p>
+<h4 id="运行容器-1"><a href="#运行容器-1" class="headerlink" title="运行容器"></a>运行容器</h4><p>镜像生成后，我们就可以去运行一个容器了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -itd --name demo-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d test_mysql</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-4aa28b1cee38138e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="容器.png"></p>
+<p>我们进入实例就可以看见刚刚初始化好的表以及数据</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3a6753961f920077.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="数据库.png"></p>
+<p>当然也可以使用客户端连接，同样也能看见<br><img src="https://upload-images.jianshu.io/upload_images/9217526-51b9b8e6b888ad29.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="客户端.png"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>好了，恭喜你到此，折腾半天后，可以在 <code>docker</code> 里面放肆的使用数据库。人生也不过如此，在于折腾，以及折腾后的成功，心情也会很愉快。尽管是搬砖，但也是自己实际动手操作过。我是一名搬砖工，专注搬砖，谢谢，附上<a href="https://github.com/cc616/docker-demo/tree/master/init-db">源码</a>吧，如需请自取（尽管它很简单）</p>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>create-react-app全家桶之router+mobx+antd</title>
+    <url>/2018/07/02/react-mobx/</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer" />
+
+<p><code>create-react-app</code> 是一个搭建 <code>react</code> 项目的脚手架，该脚手架很好用，文档功能也很全，是上手  <code>react</code> 项目的不二首选，下面我们就来讲讲 <code>reacte-react-app</code> 创建的项目如何配置UI组件以及数据流</p>
+<h3 id="使用-ceacte-react-app-初始化项目"><a href="#使用-ceacte-react-app-初始化项目" class="headerlink" title="使用 ceacte-react-app 初始化项目"></a>使用 <code>ceacte-react-app</code> 初始化项目</h3><h4 id="全局安装-create-react-app"><a href="#全局安装-create-react-app" class="headerlink" title="全局安装 create-react-app"></a>全局安装 <code>create-react-app</code></h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install -g create-react-app</span><br></pre></td></tr></table></figure>
+<p><code>or</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yarn -g create-react-app</span><br></pre></td></tr></table></figure>
+
+<h4 id="新建一个项目"><a href="#新建一个项目" class="headerlink" title="新建一个项目"></a>新建一个项目</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">create-react-app react-demo</span><br></pre></td></tr></table></figure>
+
+<p>工具会帮你初始化一个简单基本的项目并且会自动帮你安装项目所需要的各种依赖，如果中途出现网络问题导致依赖安装不上，这时你可能需要配置代理或者设置其他的 <code>npm</code> 源。关于 <code>npm</code> 源镜像有很多选择，比如淘宝镜像等，这里不多做说明，网上有很多。</p>
+<h4 id="进入项目并启动"><a href="#进入项目并启动" class="headerlink" title="进入项目并启动"></a>进入项目并启动</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd react-demo</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<p><code>or</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yarn start</span><br></pre></td></tr></table></figure>
+
+<p>此时浏览器会自动访问 <a href="http://localhost:3000/%EF%BC%8C">http://localhost:3000/，</a> 你会看到一个 <code>react</code> 的欢迎界面，如下：代表你的项目已经正常运行了</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3c322f00a9315f0d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="欢迎.png"></p>
+<p><strong>但是</strong>：这仍然不够，这时你用代码编辑器打开项目会发现项目结构其实是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">react-demo/</span><br><span class="line">  README.md</span><br><span class="line">  node_modules/</span><br><span class="line">  package.json</span><br><span class="line">  public/</span><br><span class="line">    index.html</span><br><span class="line">    favicon.ico</span><br><span class="line">  src/</span><br><span class="line">    App.css</span><br><span class="line">    App.js</span><br><span class="line">    App.test.js</span><br><span class="line">    index.css</span><br><span class="line">    index.js</span><br><span class="line">    logo.svg</span><br></pre></td></tr></table></figure>
+
+<p>找不到 <code>webpack</code> 的配置项，此时你需要展开 (<code>eject</code>) 项目，这个一个不可逆过程，一旦你执行了，就不能回到初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm run eject</span><br></pre></td></tr></table></figure>
+
+<p>再看项目结构，就会多了一些其他目录，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">react-demo/</span><br><span class="line">  README.md</span><br><span class="line">  config/</span><br><span class="line">    jest/</span><br><span class="line">    env.js</span><br><span class="line">    paths.js</span><br><span class="line">    polyfills.js</span><br><span class="line">    webpack.config.dev.js</span><br><span class="line">    webpack.config.prod.js</span><br><span class="line">    webpackDevServer.config.js</span><br><span class="line">  node_modules/</span><br><span class="line">  package.json</span><br><span class="line">  public/</span><br><span class="line">    index.html</span><br><span class="line">    favicon.ico</span><br><span class="line">  scripts/</span><br><span class="line">    build.js</span><br><span class="line">    start.js</span><br><span class="line">    test.js</span><br><span class="line">  src/</span><br><span class="line">    App.css</span><br><span class="line">    App.js</span><br><span class="line">    App.test.js</span><br><span class="line">    index.css</span><br><span class="line">    index.js</span><br><span class="line">    logo.svg</span><br><span class="line">    registerServiceWorker.js</span><br></pre></td></tr></table></figure>
+
+<p>展开 <code>config</code> 目录，里面就有 <code>webpack</code> 配置文件，还有一些环境、兼容、测试等的配置。而 <code>scripts</code> 目录里主要就是测试、启动、打包的脚本，这里不做过多描述，(其实笔者也没认真看过里面的代码)，如果要详细研究，<code>create-react-app</code> 的<a href="https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md">官方文档</a>有详细的讲解。</p>
+<p>好了，现在 <code>react</code> 项目已经跑起来了，也找到 <code>webpack</code> 配置，可以做一些自定义的配置，接下来我们就讲一将，如何配置数据流以及UI库。</p>
+<h3 id="sass-的配置"><a href="#sass-的配置" class="headerlink" title="sass 的配置"></a><code>sass</code> 的配置</h3><h4 id="安装-loader-依赖"><a href="#安装-loader-依赖" class="headerlink" title="安装 loader 依赖"></a>安装 <code>loader</code> 依赖</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install resolve-url-loader sass-loader node-sass --save</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改-webpack配置文件"><a href="#修改-webpack配置文件" class="headerlink" title="修改 webpack配置文件"></a>修改 <code>webpack</code>配置文件</h4><p>  找到 <code>webpack.config.dev.js</code> 与 <code>webpack.config.prod.js</code> 文件，后缀 <code>dev</code> 表示开发的配置，<code>prod</code> 表示是生产环境的配置，因此两个配置文件都需要修改。</p>
+<ul>
+<li>修改<code>webpack.config.dev.js</code></li>
+</ul>
+<p>在 <code>module</code> 的 <code>rules</code> 字段中添加以下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test: /\.scss$/,</span><br><span class="line">  use: [</span><br><span class="line">    require.resolve(&#x27;style-loader&#x27;),</span><br><span class="line">    &#123;</span><br><span class="line">      loader: require.resolve(&#x27;css-loader&#x27;), // translates CSS into CommonJS</span><br><span class="line">      options: &#123;</span><br><span class="line">        sourceMap: true,</span><br><span class="line">        importLoaders: 3,</span><br><span class="line">      &#125;,</span><br><span class="line">   &#125;,</span><br><span class="line">   require.resolve(&#x27;resolve-url-loader&#x27;), // resolves relative paths in url() statements based on the original source file</span><br><span class="line">   &#123;</span><br><span class="line">      loader: require.resolve(&#x27;postcss-loader&#x27;),</span><br><span class="line">      options: &#123;</span><br><span class="line">        ident: &#x27;postcss&#x27;, // https://webpack.js.org/guides/migrating/#complex-options</span><br><span class="line">        plugins: () =&gt; [</span><br><span class="line">          require(&#x27;postcss-flexbugs-fixes&#x27;),</span><br><span class="line">          autoprefixer(&#123;</span><br><span class="line">            flexbox: &#x27;no-2009&#x27;,</span><br><span class="line">          &#125;),</span><br><span class="line">        ],</span><br><span class="line">     &#125;,</span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">      loader: require.resolve(&#x27;sass-loader&#x27;),  // compiles Sass to CSS,</span><br><span class="line">      options: &#123;</span><br><span class="line">        includePaths: [`$&#123;paths.appNodeModules&#125;/normalize-scss/sass`],</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  ],</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>这时修改 <code>.css</code> 样式文件为 <code>.scss</code> 并用 <code>sass</code> 语法修改样式，会发现页面生效了，别忘了修改在组件中引用样式的后缀。</p>
+<p>当然，这只是修改了开发环境的配置，还需要修改生产环境</p>
+<ul>
+<li><p>修改<code>webpack.config.prod.js</code></p>
+<p>同样在 <code>rules</code> 字段中添加以下代码</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test : /\.scss$/,</span><br><span class="line">  use  : ExtractTextPlugin.extract(</span><br><span class="line">    Object.assign(</span><br><span class="line">      &#123;</span><br><span class="line">        fallback: require.resolve(&#x27;style-loader&#x27;),</span><br><span class="line">        use: [</span><br><span class="line">          &#123;</span><br><span class="line">            loader: require.resolve(&#x27;css-loader&#x27;), // translates CSS into CommonJS</span><br><span class="line">            options: &#123;</span><br><span class="line">              sourceMap     : true,</span><br><span class="line">              minimize      : true,</span><br><span class="line">              importLoaders : 3,</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">          require.resolve(&#x27;resolve-url-loader&#x27;), // resolves relative paths in url() statements based on the original source file</span><br><span class="line">          &#123;</span><br><span class="line">            loader: require.resolve(&#x27;postcss-loader&#x27;),</span><br><span class="line">            options: &#123;</span><br><span class="line">              ident: &#x27;postcss&#x27;, // https://webpack.js.org/guides/migrating/#complex-options</span><br><span class="line">              plugins: () =&gt; [</span><br><span class="line">                require(&#x27;postcss-flexbugs-fixes&#x27;),</span><br><span class="line">                autoprefixer(&#123;</span><br><span class="line">                  flexbox: &#x27;no-2009&#x27;,</span><br><span class="line">                &#125;),</span><br><span class="line">              ],</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line"></span><br><span class="line">          &#123;</span><br><span class="line">            loader: require.resolve(&#x27;sass-loader&#x27;),  // compiles Sass to CSS,</span><br><span class="line">            options: &#123;</span><br><span class="line">              includePaths: [`$&#123;paths.appNodeModules&#125;/normalize-scss/sass`],</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">        ]</span><br><span class="line">      &#125;,</span><br><span class="line">      extractTextPluginOptions</span><br><span class="line">    )</span><br><span class="line">  ),</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<h3 id="引入UI库"><a href="#引入UI库" class="headerlink" title="引入UI库"></a>引入UI库</h3><p>笔者使用的是蚂蚁金服的 <code>antd</code> UI组件库，文档全，使用简单，组件也能满足基本的需求。<a href="https://ant.design/docs/react/introduce-cn">官方文档</a>也有具体的相关配置说明。</p>
+<h4 id="安装组件"><a href="#安装组件" class="headerlink" title="安装组件"></a>安装组件</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install antd --save</span><br></pre></td></tr></table></figure>
+<p><code>or</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yarn add antd</span><br></pre></td></tr></table></figure>
+<h4 id="按需加载"><a href="#按需加载" class="headerlink" title="按需加载"></a>按需加载</h4><p>使用 <code>babel-plugin-import</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install babel-plugin-import --save</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改-webpack-文件"><a href="#修改-webpack-文件" class="headerlink" title="修改 webpack 文件"></a>修改 <code>webpack</code> 文件</h4><p>在 <code>rules</code> 中的 <code>babel</code> 规则中的 <code>options</code> 中添加以下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">   [&#x27;import&#x27;, &#123; libraryName: &#x27;antd&#x27;, style: true &#125;],</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<h4 id="引入样式"><a href="#引入样式" class="headerlink" title="引入样式"></a>引入样式</h4><p>使用 <code>less</code> 加载</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install less@2.7.2 less-loader --save</span><br></pre></td></tr></table></figure>
+
+<p><em>注意：</em> <code>less</code> 版本不能高于 <code>3.0.0</code> 至于为什么，请原谅笔者也不知道，<a href="https://github.com/ant-design/ant-design/issues/7927#issuecomment-372513256">官方issue</a> </p>
+<p>修改 <code>webpack</code> 文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test: /\.less$/,</span><br><span class="line">  use: [</span><br><span class="line">    require.resolve(&#x27;style-loader&#x27;),</span><br><span class="line">    require.resolve(&#x27;css-loader&#x27;),</span><br><span class="line">    &#123;</span><br><span class="line">      loader: require.resolve(&#x27;less-loader&#x27;),</span><br><span class="line">      options: &#123;</span><br><span class="line">        modifyVars: &#123; &#x27;@primary-color&#x27;: &#x27;#1890ff&#x27; &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  ],</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>@primary-color</code> 表示主题色，<a href="https://ant.design/docs/react/customize-theme-cn">官方</a>也有推荐配置主题色的说明。</p>
+<h4 id="在页面中使用组件"><a href="#在页面中使用组件" class="headerlink" title="在页面中使用组件"></a>在页面中使用组件</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import &#123; Button &#125; from &#x27;antd&#x27;;</span><br><span class="line">...</span><br><span class="line">&lt;div&gt;</span><br><span class="line">  &lt;Button type=&quot;primary&quot;&gt;button&lt;/Button&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>此时页面上就会显示 <code>Button</code> 组件</p>
+<h3 id="配置-eslint"><a href="#配置-eslint" class="headerlink" title="配置 eslint"></a>配置 <code>eslint</code></h3><p>为了是代码保持统一风格，可以使用工具 <code>eslit</code> 来检查代码的规范性。笔者是使用 <code>airbnb</code> 的代码风格，当然你也可以自定义属于自己的code-style。</p>
+<h4 id="安装需要的包"><a href="#安装需要的包" class="headerlink" title="安装需要的包"></a>安装需要的包</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install eslint-config-airbnb --save</span><br></pre></td></tr></table></figure>
+
+<p><em>注意</em>：<br>也许使用 <code>create-react-app</code> 初始化出来的项目，配置 <code>eslint</code> 以及安装了各种 <code>eslint</code> 依赖，这时启动项目发现报以下错误，那么你可能需要更改包的版本，笔者也是尝试了多次才成功的。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-58ef3bbca688ac90.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="eslint.png"></p>
+<h4 id="引入配置"><a href="#引入配置" class="headerlink" title="引入配置"></a>引入配置</h4><p>在项目的根目录下创建 <code>.eslintrc</code> 文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;env&quot;: &#123;</span><br><span class="line">    &quot;browser&quot;: true,</span><br><span class="line">    &quot;jest&quot;: true,</span><br><span class="line">    &quot;es6&quot;: true,</span><br><span class="line">    &quot;node&quot;: true</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;parser&quot;: &quot;babel-eslint&quot;,</span><br><span class="line">  &quot;plugins&quot;: [</span><br><span class="line">    &quot;react&quot;,</span><br><span class="line">    &quot;import&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;extends&quot;: &quot;airbnb&quot;,</span><br><span class="line">  &quot;rules&quot;: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>rules</code> 可以覆盖 <code>airbnb</code> 的规则，关于如何编写 <code>eslint</code> 规则可以查询 <a href="https://eslint.org/"><code>eslint</code> 官方文档</a></p>
+<p>也可以在根目录下创建 <code>.eslintignore</code> 来对某些文件不做 <code>eslint</code> 校验</p>
+<h4 id="commit-代码时使用-eslint-检查"><a href="#commit-代码时使用-eslint-检查" class="headerlink" title="commit 代码时使用 eslint 检查"></a><code>commit</code> 代码时使用 <code>eslint</code> 检查</h4><p>安装依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install lint-staged husky --save</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>package.json</code> 文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;precommit&quot;: &quot;lint-staged&quot;,</span><br><span class="line">  &quot;start&quot;: &quot;react-scripts start&quot;,</span><br><span class="line">  &quot;build&quot;: &quot;react-scripts build&quot;,</span><br><span class="line">...</span><br><span class="line">&quot;lint-staged&quot;: &#123;</span><br><span class="line">  &quot;src/**/*.&#123;js,jsx&#125;&quot;: [</span><br><span class="line">    &quot;eslint --fix&quot;,</span><br><span class="line">    &quot;git add&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="引入路由系统"><a href="#引入路由系统" class="headerlink" title="引入路由系统"></a>引入路由系统</h3><h4 id="设置文件别名"><a href="#设置文件别名" class="headerlink" title="设置文件别名"></a>设置文件别名</h4><p>现在，我们需要更改 <code>src</code> 目录的文件结构，以便于更符合实际项目场景，我们可能需要 <code>components</code> 文件夹来存放组件，<code>routes</code> 文件夹来存放页面，<code>styles</code> 文件夹来存放样式，<code>utils</code> 文件夹来存放工具类函数等。</p>
+<p>既然有了文件夹来区分不同的功能，为了方便文件的相互，我们可以利用 <code>webpack</code> 来设置别名。</p>
+<ul>
+<li>修改 <code>config</code> 文件夹下的 <code>paths</code> 文件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  ...</span><br><span class="line">  appSrc: resolveApp(&#x27;src&#x27;),</span><br><span class="line">  appStyles: resolveApp(&#x27;src/styles&#x27;),</span><br><span class="line">  appRoutes: resolveApp(&#x27;src/routes&#x27;),</span><br><span class="line">  appComponents: resolveApp(&#x27;src/components&#x27;),</span><br><span class="line">  appUtils: resolveApp(&#x27;src/utils&#x27;),</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改 <code>webpack</code> 配置项 <code>alias</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alias: &#123;</span><br><span class="line">  styles: paths.appStyles,</span><br><span class="line">  routes: paths.appRoutes,</span><br><span class="line">  components: paths.appComponents,</span><br><span class="line">  utils: paths.appUtils,</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装路由组件-react-router"><a href="#安装路由组件-react-router" class="headerlink" title="安装路由组件 react-router"></a>安装路由组件 <code>react-router</code></h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install react-router react-router-dom --save</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在 <code>routes</code> 文件夹中新建 <code>index.jsx</code> 页面，以及新建两个页面组件分别是 <code>home.jsx</code> 和 <code>about.jsx</code></li>
+</ul>
+<p><code>index.jsx</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import &#123; Route, Redirect &#125; from &#x27;react-router&#x27;</span><br><span class="line">import &#123; HashRouter, Switch &#125; from &#x27;react-router-dom&#x27;</span><br><span class="line"></span><br><span class="line">import Home from &#x27;routes/home&#x27;</span><br><span class="line">import About from &#x27;routes/about&#x27;</span><br><span class="line"></span><br><span class="line">const Routes = () =&gt; (</span><br><span class="line">  &lt;HashRouter&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;Route exact path=&quot;/&quot; render=&#123;() =&gt; &lt;Redirect to=&quot;/home&quot; /&gt;&#125; /&gt;</span><br><span class="line">      &lt;Switch&gt;</span><br><span class="line">        &lt;Route path=&quot;/home&quot; component=&#123;Home&#125; /&gt;</span><br><span class="line">        &lt;Route path=&quot;/about&quot; component=&#123;About&#125; /&gt;</span><br><span class="line">      &lt;/Switch&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/HashRouter&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const App = () =&gt; (</span><br><span class="line">  &lt;Routes /&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">export default App</span><br></pre></td></tr></table></figure>
+
+<p><code>about.jsx</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import &#123; Link &#125; from &#x27;react-router-dom&#x27;</span><br><span class="line"></span><br><span class="line">const About = () =&gt; (</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;p&gt;this is about page&lt;/p&gt;</span><br><span class="line">    &lt;Link to=&quot;/home&quot;&gt;goto Home&lt;/Link&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">export default About</span><br></pre></td></tr></table></figure>
+
+<p><code>home.jsx</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import &#123; Link &#125; from &#x27;react-router-dom&#x27;</span><br><span class="line"></span><br><span class="line">const Home = () =&gt; (</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;p&gt;this is home page&lt;/p&gt;</span><br><span class="line">    &lt;Link to=&quot;/about&quot;&gt;goto About&lt;/Link&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">export default Home</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改 <code>src</code> 文件夹下的 <code>index</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import ReactDOM from &#x27;react-dom&#x27;</span><br><span class="line">import App from &#x27;routes/index&#x27;</span><br><span class="line">import registerServiceWorker from &#x27;./registerServiceWorker&#x27;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(&lt;App /&gt;, document.getElementById(&#x27;root&#x27;))</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加数据状态管理"><a href="#添加数据状态管理" class="headerlink" title="添加数据状态管理"></a>添加数据状态管理</h3><p><code>react</code> 本身就有自己的状态管理 <code>state</code>，但随着项目的复杂性页面的增多其维护性不是那么友好，于是出现了针对 <code>react</code> 的数据状态管理，如 <code>flux</code>、<code>redux</code>、<code>mobx</code> 等等。下面我们就讲解项目如何配置 <code>mobx</code>。</p>
+<h4 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install mobx mobx-react --save</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改文件"><a href="#修改文件" class="headerlink" title="修改文件"></a>修改文件</h4><ul>
+<li><p>新建文件夹 <code>stores</code></p>
+<p>在 <code>src</code> 目录下新建一个文件夹 <code>stores</code>，创建 <code>index.js</code> 文件</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const store = &#123;&#125;</span><br><span class="line"></span><br><span class="line">export default store</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>修改 <code>webpack</code> 文件</p>
+<p>在 <code>webpack</code> 文件中设置别名，方面引用，当然别忘了修改 <code>paths</code> 文件来设置路径</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alias: &#123;</span><br><span class="line">  styles: paths.appStyles,</span><br><span class="line">  routes: paths.appRoutes,</span><br><span class="line">  components: paths.appComponents,</span><br><span class="line">  stores: appStores,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>修改入口文件</p>
+<p>修改 <code>routes</code> 下的 <code>index.js</code></p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">import &#123; Provider &#125; from &#x27;mobx-react&#x27;</span><br><span class="line">import stores from &#x27;stores&#x27;</span><br><span class="line">...</span><br><span class="line">const App = () =&gt; (</span><br><span class="line">  &lt;Provider &#123;...stores&#125;&gt;</span><br><span class="line">    &lt;Routes /&gt;</span><br><span class="line">  &lt;/Provider&gt;</span><br><span class="line">)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h4><ul>
+<li>使用 <code>mobx</code> 你还需要安装 <code>babel</code> 的装饰器插件，以及修改 <code>babel</code> 的配置</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install babel-plugin-transform-decorators-legacy --save</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>package.json</code> 文件中的 <code>babel</code> 参数，或者在根目录下新建一个 <code>.babelrc</code> 文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;babel&quot;: &#123;</span><br><span class="line">  &quot;presets&quot;: [</span><br><span class="line">    &quot;react-app&quot;</span><br><span class="line">  ],</span><br><span class="line">  &quot;plugins&quot;: [</span><br><span class="line">    &quot;babel-plugin-transform-decorators-legacy&quot;</span><br><span class="line">  ]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>现在，你可以在你的组件中使用 <code>mobx</code> 来管理你的状态了。关于 <code>mobx</code> 的使用，你可以访问<a href="https://github.com/mobxjs/mobx">官方文档</a></p>
+<h4 id="添加-mobx-开发工具"><a href="#添加-mobx-开发工具" class="headerlink" title="添加 mobx 开发工具"></a>添加 <code>mobx</code> 开发工具</h4><ul>
+<li>安装依赖</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install mobx-react-devtools</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改入口文件 <code>routes</code> 下的 <code>index.js</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">import DevTools from &#x27;mobx-react-devtools&#x27;</span><br><span class="line">....</span><br><span class="line">const App = () =&gt; (</span><br><span class="line">  &lt;Fragment&gt;</span><br><span class="line">    &lt;Provider &#123;...stores&#125;&gt;</span><br><span class="line">      &lt;Routes /&gt;</span><br><span class="line">    &lt;/Provider&gt;</span><br><span class="line">    &lt;DevTools /&gt;</span><br><span class="line">  &lt;/Fragment&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>当然，你也可以设置环境变量，只在开发中打开该工具</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  process.env.NODE_ENV === &#x27;development&#x27; ? (</span><br><span class="line">    &lt;DevTools /&gt;</span><br><span class="line">  ) : null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><code>create-react-app</code> 脚手架其实已经很完美了，一些列的打包编译优化也做了，使用 <code>create-react-app</code> 初始化的项目，只需要根据业务定制化的配置一些东西，这些都不难，网上有很多类似的案例，主要还是心细，多去专研。<br>最后，附上本次项目的完整<a href="https://github.com/cc616/cra-demo">代码</a><br>欢迎指出不足之处，如果您觉得不错，不要忘记<strong>star</strong>哟</p>
+]]></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+        <tag>mobx</tag>
+        <tag>router</tag>
+        <tag>antd</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>手把手的教你搭建hexo的小白blog</title>
+    <url>/2020/05/22/hexo-blog/</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer" />
+
+<p>作为一名搬砖工，怎么可能没有一个自己的博客，在网上看见别个的blog多么的酷炫。心想自己也搞一个吧，一来可以将平时积累的经验记录成文档，二来万一以后跳槽也是一个加分项。于是乎在网上搜索了一大圈，五花八门的，有用自己服务器搭建，一听好麻烦，还有购买服务器，再看看自己的荷包（‍🤦‍♀️），想想还是先找个免费的吧。这不 <code>Hexo</code> 多合适啊，于是撸起袖子就是干。一路下来发现搭建也是很简单的，现在我就将我搭建的过程记录下来。<code>Hexo</code> 是一个快速、简洁且高效的博客框架，同时也支持 <code>Markdown</code>，简直不能太完美</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装<a href="https://hexo.io/zh-cn/docs/">官网</a>脚手架</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>使用命令初始化一个基础项目</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo init blog-demo</span><br></pre></td></tr></table></figure>
+
+<p>用编辑器打开 <code>blog-demo</code>，我们可以看到里面目录结构</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-6daa79c34bdd3ea2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="目录结构.png"></p>
+<p>其中：<br><code>source</code> 文件夹主要放我们 <code>Markdown</code> 文档，<code>themes</code> 文件夹主要是网站主题相关的，<code>_config.yml</code> 主要是一些配置项<br>然后我们使用 <code>hexo s</code>（<code>hexo server</code> 的简写，<a href="https://hexo.io/zh-cn/docs/commands">官网</a>有许多命令） 启动项目，打开 <a href="http://localhost:4000/">http://localhost:4000/</a> 就能看见网站运行起来了</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-7b63303cf296d367.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="blog.png"></p>
+<h3 id="主题修改"><a href="#主题修改" class="headerlink" title="主题修改"></a>主题修改</h3><p>最简单的blog就已经好了，但是发现好像风格给自己想象的不一样，不过没有关系，<code>hexo</code> 支持修改主题，<a href="https://hexo.io/zh-cn/docs/themes">官网</a>也有具体说明，当然网上也有很多成熟的主题插件了，你可以下载下来直接使用，比如<a href="https://www.zhihu.com/question/24422335">知乎</a>上就列举了很多，下面我们就使用 <code>next</code> 的主题</p>
+<h4 id="安装主题插件"><a href="#安装主题插件" class="headerlink" title="安装主题插件"></a>安装主题插件</h4><p>首先我们需要修改根目录下的 <code>_config.yml</code> 文件中的 <code>theme</code> 字段</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
+
+<p>接着我们需要clone一份 <code>next</code> 主题到 <code>theme</code> 文件夹下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p>这个时候我们再重启一下服务，就会发现界面已经修改了</p>
+<h4 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h4><p>尽管主题修改了，但是还是不是很符合自己的预期。别急，<code>next</code> 也支持修改配置，其主要就是修改 <code>next</code> 文件夹下的 <code>_config.yml</code> 文件</p>
+<ul>
+<li>修改布局</li>
+</ul>
+<p>将上下改成左右</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3e209944b077eb53.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="布局.png"></p>
+<p>将菜单栏放在右边</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-2625f9c9ab29f088.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="菜单栏.png"></p>
+<p>我们在修改的过程中，可以使用 <code>hexo s --debug</code> 来支持热更新，避免每次修改都重启服务器</p>
+<ul>
+<li>修改语言</li>
+</ul>
+<p>我们将语言切换成中文，如果配置文件中没有 <code>language</code> 可自行加上</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-c0c7588764fb1e52.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="中文.png"></p>
+<p>但是光修改 <code>next</code> 里面的配置是不行的，还需要修改根目录下 <code>hexo</code> 的配置，同样将语言修改成 <code>language: zh-CN</code></p>
+<ul>
+<li>添加友情链接</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-534de919d00e5602.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="友情链接.png"></p>
+<ul>
+<li>添加头像</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-4a0d7bcdf267bfe0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="头像.png"></p>
+<ul>
+<li>支持打赏</li>
+</ul>
+<p>将你的微信支付宝收款二维码图片放在 <code>source</code> 文件夹下的 <code>images</code> 文件夹下，当然你也可以另起目录，但要主要引用时的路径</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-1fd1d8c3a4fdbfc2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="打赏.png"></p>
+<p><strong>注意</strong>：如果你的next版本不是最新，可能会当鼠标放上去后，下面的文字在转圈，感觉好晃👀，可以修改一下它的样式。在 <code>source</code> -&gt; <code>css</code> -&gt; <code>_common</code> -&gt; <code>components</code> -&gt; <code>post</code> -&gt; <code>post-reward.styl</code>，修改它的样式就可以了，删除或者注释都可以</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-349a11d12fe561d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="支付样式.png"></p>
+<ul>
+<li>添加菜单</li>
+</ul>
+<p>我们可以新增一些菜单，需要在根目录下的 <code>source</code> 文件夹下新建对应的文件。比如新增一个“关于我”的菜单，那么我们就需要在 <code>source</code> 文件夹新建一个 <code>about</code> 的文件夹，里面再新建一个  <code>index.md</code> 文件就可以介绍自己了（也可以使用 <code>hexo</code>  命令生成新的页面，eg <code>hexo new  page &quot;archives&quot;</code>）；然后再修改菜单配置</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-85d8c797b03053db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="菜单.png"></p>
+<ul>
+<li>首页文章篇幅限制</li>
+</ul>
+<p>这要看你的 <code>next</code> 版本是多少，在版本 <code>v7.6.0</code> 以前有个字段 <code>auto_excerpt</code> 可以自动截断文章内容作为摘要，但在后面的版本，官方不支持，建议设置 <code>excerpt_description</code></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-6efd9c390239ed74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="开启篇幅设置.png"></p>
+<p>一种方式，你可以在你的文章要截断的地方加上 <code>&lt;!-- more --&gt;</code></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-b063da81088d0f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="添加更多.png"></p>
+<p>另外一种方式给每篇文章写 <code>description</code>，这种方式在详情页面，摘要显示的字体会很小</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-e117c63ffa8c2274.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>当然还有很多其他的配置，你也可以根据自己的需要去修改，这里就不在一一举例了</p>
+<h4 id="修改首页配置"><a href="#修改首页配置" class="headerlink" title="修改首页配置"></a>修改首页配置</h4><p>我们还可以在首页加上一些简介，修改语言等；这个是修改根目录下的 <code>_config.yml</code> 文件</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-d7a58073cbc66a17.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="首页.png"></p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><h4 id="新建仓库"><a href="#新建仓库" class="headerlink" title="新建仓库"></a>新建仓库</h4><p>现在博客已经孵化出来了尝鲜版，是时候部署上去体验了；一听部署，是不是就需要服务器与域名啊，完了我啥也没有；没关系，全球最大的同性交友网站 <code>github</code> 就是你最好的选择。首先，你需要有个一个 <code>github</code> 账号（如果没有就申请一个），然后新建一个仓库，这个仓库的名字一定要和你  <code>github</code> 账号相同。比如我的 <code>github</code>  叫 <code>cc616</code>（不是昵称），那么就需要建一个仓库名为 <code>cc616.github.io</code>，这样仓库就建好了。接着你需要修改该仓库的设置</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3f9b01437ee00084.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="点击设置.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-cf9f66a2f52f6d8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置.png"></p>
+<p>这样你就可以通过 <a href="https://cc616.github.io/">https://cc616.github.io/</a>访问你的网站了</p>
+<h4 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h4><p>仓库建好了，我们需要新加一个包</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>_config.yml</code> 里面的部署配置</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-81f8ffdea7ab4e8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="部署.png"></p>
+<p>这样我们每次新增了文章后，就可以使用命令 <code>hexo d</code> 一键部署到GitHub Pages 上了</p>
+<h3 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h3><h4 id="图片显示不出来"><a href="#图片显示不出来" class="headerlink" title="图片显示不出来"></a>图片显示不出来</h4><p>你的图片在其他网站都能显示，但是你放在这里就显示失败，可能就需要在文章开头加上</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-db40af341bb68aae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图片显示问题.png"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><code>hexo</code> 搭建博客真的是简单方便，一路下来我也就花了一天不到的时间，接下来就是往里面填充自己累积起来的知识了。其实这篇文章早在两年前就该写了，但是自己觉得这么简单，没有什么好记录。最近重新捡起写博客，才发现自己的搭的blog早已不知道在哪里了，网站上也只有那么两篇文章，说来也惭愧。正好自己重新搭建了，所以就把记录下来了，希望对你有用。不过这个有个缺点就是你需要自己的图床，用七牛云搭建一个也很简单，我曾经也搭建过，改天再写出来吧。如果你嫌麻烦，可以使用网上一些现成的，也可以像我一般把文章写在简书上，既可以提高文章宣传渠道，也可以有图床啦🤦‍♀️</p>
+]]></content>
+      <categories>
+        <category>Front-end</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>blog</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>react全家桶之redux</title>
+    <url>/2018/07/07/react-redux/</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer" />
+
+<p><em>前言</em>：该文章主要讲解如何在 <code>react</code> 项目中接入 <code>redux</code> 数据状态管理，假设你已经阅读过这篇文章<a href="http://licuicui.top/2018/07/02/react-mobx">create-react-app全家桶之router+mobx+antd</a>中的前半篇（除去<strong>添加数据管理</strong>这一段）。</p>
+<ul>
+<li>安装需要的依赖包</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install redux react-redux --save</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>新建需要的文件夹</li>
+</ul>
+<p>在 <code>src</code> 目录下新建 <code>actions</code>、<code>reducers</code>、<code>constants</code> 文件夹，<code>actions</code> 存放分发的 <code>action</code>函数；<code>reducers</code> 存放单个的 <code>reducer</code>；<code>constants</code> 存放分发 <code>action</code> 的 <code>type</code> 常量。</p>
+<p>  在 <code>reducers</code> 中创建 <code>index.js</code>，用来组合单个的 <code>reducer</code>，输出根 <code>state</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import &#123; combineReducers &#125; from &#x27;redux&#x27;</span><br><span class="line"></span><br><span class="line">export default combineReducers(&#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改 <code>webpack</code> 文件来设置别名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alias: &#123;</span><br><span class="line">  styles: paths.appStyles,</span><br><span class="line">  routes: paths.appRoutes,</span><br><span class="line">  components: paths.appComponents,</span><br><span class="line">  actions: paths.appActions,</span><br><span class="line">  constants: paths.appConstants,</span><br><span class="line">  reducers: paths.appReducers,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加 <code>redux-thunk</code> 异步中间件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install redux-thunk --save</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改 <code>routes</code> 文件夹下的 <code>index.js</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">import &#123; Provider &#125; from &#x27;react-redux&#x27;</span><br><span class="line">import &#123; createStore, applyMiddleware, compose &#125; from &#x27;redux&#x27;</span><br><span class="line">import thunkMiddleware from &#x27;redux-thunk&#x27;</span><br><span class="line">import rootReducer from &#x27;reducers&#x27;</span><br><span class="line">...</span><br><span class="line">const store = createStore(</span><br><span class="line">  rootReducer,</span><br><span class="line">  compose(applyMiddleware(thunkMiddleware)),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const App = () =&gt; (</span><br><span class="line">  &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">    &lt;Routes /&gt;</span><br><span class="line">  &lt;/Provider&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>现在你可以编写你自己的 <code>action</code>，<code>reducer</code> 了。</p>
+<ul>
+<li>配合浏览器安装辅助工具 <code>Redux DevTools</code></li>
+</ul>
+<p>Chrome浏览器安装 <code>Redux DevTools</code> 扩展程序，修改 <code>routes</code> 中的 <code>index.js</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">let composeEnhancers = compose</span><br><span class="line">if (process.env.NODE_ENV === &#x27;development&#x27;) &#123;</span><br><span class="line">  composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;  // eslint-disable-line</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const store = createStore(</span><br><span class="line">  rootReducer,</span><br><span class="line">  composeEnhancers(applyMiddleware(thunkMiddleware)),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>在浏览器界面打开 <code>Redux DevTools</code> 就能看见以下效果</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-038be380f9115290.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DevTools.png"></p>
+<h3 id="编写middleware"><a href="#编写middleware" class="headerlink" title="编写middleware"></a>编写middleware</h3><p>如果需要自定义的 <code>middleware</code>，很简单，这个 <code>middleware</code> 只接收一个 <code>action</code>，执行后也需要返回一个 <code>action</code>；如果需要执行下一步，调用 <code>next(action)</code> 即可。</p>
+<ul>
+<li>日志的中间件</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const logger = store =&gt; next =&gt; (action) =&gt; &#123;</span><br><span class="line">  console.log(&#x27;dispatching&#x27;, action);</span><br><span class="line">  const result = next(action);</span><br><span class="line">  console.log(&#x27;next state&#x27;, store.getState());</span><br><span class="line">  return result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>routes</code>文件夹下的 <code>index.js</code>，将该日志中间件加上</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const store = createStore(</span><br><span class="line">  rootReducer,</span><br><span class="line">  composeEnhancers(applyMiddleware(thunkMiddleware, logger)),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>当然还是附上<a href="https://github.com/cc616/cra-demo/tree/redux-demo/src">项目地址</a><br>欢迎指正、<strong>star</strong></p>
+<h3 id="中途遇到的问题"><a href="#中途遇到的问题" class="headerlink" title="中途遇到的问题"></a>中途遇到的问题</h3><h4 id="关于reducer"><a href="#关于reducer" class="headerlink" title="关于reducer"></a>关于reducer</h4><ul>
+<li>控制台提示<code>No reducer provided for key &#39;xxxReducer&#39;</code><br>出现情况: 两个reducer文件如下写</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const reducer = () =&gt; &#123;&#125;;</span><br><span class="line">export default reducer;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在reducer汇总文件分别使用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">export default combineReducers(&#123;</span><br><span class="line">  reducer1,</span><br><span class="line">  reducer2,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这种写法会出现<code>No reducer provided for key &#39;xxxReducer&#39;</code><br>解决方法:</p>
+<ul>
+<li>让每个reducer命名不重复</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">const reducer1 = () =&gt; &#123;&#125;;</span><br><span class="line">export default reducer1;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>直接这样导出</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">export default () =&gt; &#123;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="redux不更新数据问题"><a href="#redux不更新数据问题" class="headerlink" title="redux不更新数据问题"></a>redux不更新数据问题</h4><p><strong>问题：</strong> 在 <code>component</code> 中直接对 <code>state</code> 树的值进行修改，将修改后的数据 <code>action</code> 到 <code>reducer</code>中，结果 <code>reducer</code> 的数据更新了，但是页面并没有重新渲染</p>
+<p><strong>原因：</strong> <code>redux</code> 的 <code>state</code> 是引用，直接对 <code>state</code> 的值进行更改时，<code>store</code> 内部的 <code>state</code> 值同样也改变了，这样导致 <code>redux</code> 认为 <code>dispatch</code> 前后 <code>state</code> 没有改变，就不会重新渲染UI，实际上 <code>state</code> 已经改变了</p>
+]]></content>
+      <categories>
+        <category>React</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+        <tag>redux</tag>
+      </tags>
+  </entry>
+</search>

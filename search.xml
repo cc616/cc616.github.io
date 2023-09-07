@@ -77,6 +77,102 @@
       </tags>
   </entry>
   <entry>
+    <title>手把手的教你搭建hexo的小白blog</title>
+    <url>/2020/05/22/hexo-blog/</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer" />
+
+<p>作为一名搬砖工，怎么可能没有一个自己的博客，在网上看见别个的blog多么的酷炫。心想自己也搞一个吧，一来可以将平时积累的经验记录成文档，二来万一以后跳槽也是一个加分项。于是乎在网上搜索了一大圈，五花八门的，有用自己服务器搭建，一听好麻烦，还有购买服务器，再看看自己的荷包（‍🤦‍♀️），想想还是先找个免费的吧。这不 <code>Hexo</code> 多合适啊，于是撸起袖子就是干。一路下来发现搭建也是很简单的，现在我就将我搭建的过程记录下来。<code>Hexo</code> 是一个快速、简洁且高效的博客框架，同时也支持 <code>Markdown</code>，简直不能太完美</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装<a href="https://hexo.io/zh-cn/docs/">官网</a>脚手架</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>使用命令初始化一个基础项目</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo init blog-demo</span><br></pre></td></tr></table></figure>
+
+<p>用编辑器打开 <code>blog-demo</code>，我们可以看到里面目录结构</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-6daa79c34bdd3ea2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="目录结构.png"></p>
+<p>其中：<br><code>source</code> 文件夹主要放我们 <code>Markdown</code> 文档，<code>themes</code> 文件夹主要是网站主题相关的，<code>_config.yml</code> 主要是一些配置项<br>然后我们使用 <code>hexo s</code>（<code>hexo server</code> 的简写，<a href="https://hexo.io/zh-cn/docs/commands">官网</a>有许多命令） 启动项目，打开 <a href="http://localhost:4000/">http://localhost:4000/</a> 就能看见网站运行起来了</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-7b63303cf296d367.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="blog.png"></p>
+<h3 id="主题修改"><a href="#主题修改" class="headerlink" title="主题修改"></a>主题修改</h3><p>最简单的blog就已经好了，但是发现好像风格给自己想象的不一样，不过没有关系，<code>hexo</code> 支持修改主题，<a href="https://hexo.io/zh-cn/docs/themes">官网</a>也有具体说明，当然网上也有很多成熟的主题插件了，你可以下载下来直接使用，比如<a href="https://www.zhihu.com/question/24422335">知乎</a>上就列举了很多，下面我们就使用 <code>next</code> 的主题</p>
+<h4 id="安装主题插件"><a href="#安装主题插件" class="headerlink" title="安装主题插件"></a>安装主题插件</h4><p>首先我们需要修改根目录下的 <code>_config.yml</code> 文件中的 <code>theme</code> 字段</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
+
+<p>接着我们需要clone一份 <code>next</code> 主题到 <code>theme</code> 文件夹下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p>这个时候我们再重启一下服务，就会发现界面已经修改了</p>
+<h4 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h4><p>尽管主题修改了，但是还是不是很符合自己的预期。别急，<code>next</code> 也支持修改配置，其主要就是修改 <code>next</code> 文件夹下的 <code>_config.yml</code> 文件</p>
+<ul>
+<li>修改布局</li>
+</ul>
+<p>将上下改成左右</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3e209944b077eb53.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="布局.png"></p>
+<p>将菜单栏放在右边</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-2625f9c9ab29f088.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="菜单栏.png"></p>
+<p>我们在修改的过程中，可以使用 <code>hexo s --debug</code> 来支持热更新，避免每次修改都重启服务器</p>
+<ul>
+<li>修改语言</li>
+</ul>
+<p>我们将语言切换成中文，如果配置文件中没有 <code>language</code> 可自行加上</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-c0c7588764fb1e52.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="中文.png"></p>
+<p>但是光修改 <code>next</code> 里面的配置是不行的，还需要修改根目录下 <code>hexo</code> 的配置，同样将语言修改成 <code>language: zh-CN</code></p>
+<ul>
+<li>添加友情链接</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-534de919d00e5602.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="友情链接.png"></p>
+<ul>
+<li>添加头像</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-4a0d7bcdf267bfe0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="头像.png"></p>
+<ul>
+<li>支持打赏</li>
+</ul>
+<p>将你的微信支付宝收款二维码图片放在 <code>source</code> 文件夹下的 <code>images</code> 文件夹下，当然你也可以另起目录，但要主要引用时的路径</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-1fd1d8c3a4fdbfc2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="打赏.png"></p>
+<p><strong>注意</strong>：如果你的next版本不是最新，可能会当鼠标放上去后，下面的文字在转圈，感觉好晃👀，可以修改一下它的样式。在 <code>source</code> -&gt; <code>css</code> -&gt; <code>_common</code> -&gt; <code>components</code> -&gt; <code>post</code> -&gt; <code>post-reward.styl</code>，修改它的样式就可以了，删除或者注释都可以</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-349a11d12fe561d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="支付样式.png"></p>
+<ul>
+<li>添加菜单</li>
+</ul>
+<p>我们可以新增一些菜单，需要在根目录下的 <code>source</code> 文件夹下新建对应的文件。比如新增一个“关于我”的菜单，那么我们就需要在 <code>source</code> 文件夹新建一个 <code>about</code> 的文件夹，里面再新建一个  <code>index.md</code> 文件就可以介绍自己了（也可以使用 <code>hexo</code>  命令生成新的页面，eg <code>hexo new  page &quot;archives&quot;</code>）；然后再修改菜单配置</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-85d8c797b03053db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="菜单.png"></p>
+<ul>
+<li>首页文章篇幅限制</li>
+</ul>
+<p>这要看你的 <code>next</code> 版本是多少，在版本 <code>v7.6.0</code> 以前有个字段 <code>auto_excerpt</code> 可以自动截断文章内容作为摘要，但在后面的版本，官方不支持，建议设置 <code>excerpt_description</code></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-6efd9c390239ed74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="开启篇幅设置.png"></p>
+<p>一种方式，你可以在你的文章要截断的地方加上 <code>&lt;!-- more --&gt;</code></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-b063da81088d0f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="添加更多.png"></p>
+<p>另外一种方式给每篇文章写 <code>description</code>，这种方式在详情页面，摘要显示的字体会很小</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-e117c63ffa8c2274.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>当然还有很多其他的配置，你也可以根据自己的需要去修改，这里就不在一一举例了</p>
+<h4 id="修改首页配置"><a href="#修改首页配置" class="headerlink" title="修改首页配置"></a>修改首页配置</h4><p>我们还可以在首页加上一些简介，修改语言等；这个是修改根目录下的 <code>_config.yml</code> 文件</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-d7a58073cbc66a17.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="首页.png"></p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><h4 id="新建仓库"><a href="#新建仓库" class="headerlink" title="新建仓库"></a>新建仓库</h4><p>现在博客已经孵化出来了尝鲜版，是时候部署上去体验了；一听部署，是不是就需要服务器与域名啊，完了我啥也没有；没关系，全球最大的同性交友网站 <code>github</code> 就是你最好的选择。首先，你需要有个一个 <code>github</code> 账号（如果没有就申请一个），然后新建一个仓库，这个仓库的名字一定要和你  <code>github</code> 账号相同。比如我的 <code>github</code>  叫 <code>cc616</code>（不是昵称），那么就需要建一个仓库名为 <code>cc616.github.io</code>，这样仓库就建好了。接着你需要修改该仓库的设置</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3f9b01437ee00084.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="点击设置.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-cf9f66a2f52f6d8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置.png"></p>
+<p>这样你就可以通过 <a href="https://cc616.github.io/">https://cc616.github.io/</a>访问你的网站了</p>
+<h4 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h4><p>仓库建好了，我们需要新加一个包</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>_config.yml</code> 里面的部署配置</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-81f8ffdea7ab4e8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="部署.png"></p>
+<p>这样我们每次新增了文章后，就可以使用命令 <code>hexo d</code> 一键部署到GitHub Pages 上了</p>
+<h3 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h3><h4 id="图片显示不出来"><a href="#图片显示不出来" class="headerlink" title="图片显示不出来"></a>图片显示不出来</h4><p>你的图片在其他网站都能显示，但是你放在这里就显示失败，可能就需要在文章开头加上</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-db40af341bb68aae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图片显示问题.png"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><code>hexo</code> 搭建博客真的是简单方便，一路下来我也就花了一天不到的时间，接下来就是往里面填充自己累积起来的知识了。其实这篇文章早在两年前就该写了，但是自己觉得这么简单，没有什么好记录。最近重新捡起写博客，才发现自己的搭的blog早已不知道在哪里了，网站上也只有那么两篇文章，说来也惭愧。正好自己重新搭建了，所以就把记录下来了，希望对你有用。不过这个有个缺点就是你需要自己的图床，用七牛云搭建一个也很简单，我曾经也搭建过，改天再写出来吧。如果你嫌麻烦，可以使用网上一些现成的，也可以像我一般把文章写在简书上，既可以提高文章宣传渠道，也可以有图床啦🤦‍♀️</p>
+]]></content>
+      <categories>
+        <category>Front-end</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>blog</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>create-react-app全家桶之router+mobx+antd</title>
     <url>/2018/07/02/react-mobx/</url>
     <content><![CDATA[<meta name="referrer" content="no-referrer" />
@@ -248,102 +344,6 @@
         <tag>mobx</tag>
         <tag>router</tag>
         <tag>antd</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>手把手的教你搭建hexo的小白blog</title>
-    <url>/2020/05/22/hexo-blog/</url>
-    <content><![CDATA[<meta name="referrer" content="no-referrer" />
-
-<p>作为一名搬砖工，怎么可能没有一个自己的博客，在网上看见别个的blog多么的酷炫。心想自己也搞一个吧，一来可以将平时积累的经验记录成文档，二来万一以后跳槽也是一个加分项。于是乎在网上搜索了一大圈，五花八门的，有用自己服务器搭建，一听好麻烦，还有购买服务器，再看看自己的荷包（‍🤦‍♀️），想想还是先找个免费的吧。这不 <code>Hexo</code> 多合适啊，于是撸起袖子就是干。一路下来发现搭建也是很简单的，现在我就将我搭建的过程记录下来。<code>Hexo</code> 是一个快速、简洁且高效的博客框架，同时也支持 <code>Markdown</code>，简直不能太完美</p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装<a href="https://hexo.io/zh-cn/docs/">官网</a>脚手架</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
-
-<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>使用命令初始化一个基础项目</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo init blog-demo</span><br></pre></td></tr></table></figure>
-
-<p>用编辑器打开 <code>blog-demo</code>，我们可以看到里面目录结构</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-6daa79c34bdd3ea2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="目录结构.png"></p>
-<p>其中：<br><code>source</code> 文件夹主要放我们 <code>Markdown</code> 文档，<code>themes</code> 文件夹主要是网站主题相关的，<code>_config.yml</code> 主要是一些配置项<br>然后我们使用 <code>hexo s</code>（<code>hexo server</code> 的简写，<a href="https://hexo.io/zh-cn/docs/commands">官网</a>有许多命令） 启动项目，打开 <a href="http://localhost:4000/">http://localhost:4000/</a> 就能看见网站运行起来了</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-7b63303cf296d367.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="blog.png"></p>
-<h3 id="主题修改"><a href="#主题修改" class="headerlink" title="主题修改"></a>主题修改</h3><p>最简单的blog就已经好了，但是发现好像风格给自己想象的不一样，不过没有关系，<code>hexo</code> 支持修改主题，<a href="https://hexo.io/zh-cn/docs/themes">官网</a>也有具体说明，当然网上也有很多成熟的主题插件了，你可以下载下来直接使用，比如<a href="https://www.zhihu.com/question/24422335">知乎</a>上就列举了很多，下面我们就使用 <code>next</code> 的主题</p>
-<h4 id="安装主题插件"><a href="#安装主题插件" class="headerlink" title="安装主题插件"></a>安装主题插件</h4><p>首先我们需要修改根目录下的 <code>_config.yml</code> 文件中的 <code>theme</code> 字段</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
-
-<p>接着我们需要clone一份 <code>next</code> 主题到 <code>theme</code> 文件夹下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/next-theme/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-
-<p>这个时候我们再重启一下服务，就会发现界面已经修改了</p>
-<h4 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h4><p>尽管主题修改了，但是还是不是很符合自己的预期。别急，<code>next</code> 也支持修改配置，其主要就是修改 <code>next</code> 文件夹下的 <code>_config.yml</code> 文件</p>
-<ul>
-<li>修改布局</li>
-</ul>
-<p>将上下改成左右</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3e209944b077eb53.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="布局.png"></p>
-<p>将菜单栏放在右边</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-2625f9c9ab29f088.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="菜单栏.png"></p>
-<p>我们在修改的过程中，可以使用 <code>hexo s --debug</code> 来支持热更新，避免每次修改都重启服务器</p>
-<ul>
-<li>修改语言</li>
-</ul>
-<p>我们将语言切换成中文，如果配置文件中没有 <code>language</code> 可自行加上</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-c0c7588764fb1e52.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="中文.png"></p>
-<p>但是光修改 <code>next</code> 里面的配置是不行的，还需要修改根目录下 <code>hexo</code> 的配置，同样将语言修改成 <code>language: zh-CN</code></p>
-<ul>
-<li>添加友情链接</li>
-</ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-534de919d00e5602.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="友情链接.png"></p>
-<ul>
-<li>添加头像</li>
-</ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-4a0d7bcdf267bfe0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="头像.png"></p>
-<ul>
-<li>支持打赏</li>
-</ul>
-<p>将你的微信支付宝收款二维码图片放在 <code>source</code> 文件夹下的 <code>images</code> 文件夹下，当然你也可以另起目录，但要主要引用时的路径</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-1fd1d8c3a4fdbfc2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="打赏.png"></p>
-<p><strong>注意</strong>：如果你的next版本不是最新，可能会当鼠标放上去后，下面的文字在转圈，感觉好晃👀，可以修改一下它的样式。在 <code>source</code> -&gt; <code>css</code> -&gt; <code>_common</code> -&gt; <code>components</code> -&gt; <code>post</code> -&gt; <code>post-reward.styl</code>，修改它的样式就可以了，删除或者注释都可以</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-349a11d12fe561d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="支付样式.png"></p>
-<ul>
-<li>添加菜单</li>
-</ul>
-<p>我们可以新增一些菜单，需要在根目录下的 <code>source</code> 文件夹下新建对应的文件。比如新增一个“关于我”的菜单，那么我们就需要在 <code>source</code> 文件夹新建一个 <code>about</code> 的文件夹，里面再新建一个  <code>index.md</code> 文件就可以介绍自己了（也可以使用 <code>hexo</code>  命令生成新的页面，eg <code>hexo new  page &quot;archives&quot;</code>）；然后再修改菜单配置</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-85d8c797b03053db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="菜单.png"></p>
-<ul>
-<li>首页文章篇幅限制</li>
-</ul>
-<p>这要看你的 <code>next</code> 版本是多少，在版本 <code>v7.6.0</code> 以前有个字段 <code>auto_excerpt</code> 可以自动截断文章内容作为摘要，但在后面的版本，官方不支持，建议设置 <code>excerpt_description</code></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-6efd9c390239ed74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="开启篇幅设置.png"></p>
-<p>一种方式，你可以在你的文章要截断的地方加上 <code>&lt;!-- more --&gt;</code></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-b063da81088d0f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="添加更多.png"></p>
-<p>另外一种方式给每篇文章写 <code>description</code>，这种方式在详情页面，摘要显示的字体会很小</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-e117c63ffa8c2274.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>当然还有很多其他的配置，你也可以根据自己的需要去修改，这里就不在一一举例了</p>
-<h4 id="修改首页配置"><a href="#修改首页配置" class="headerlink" title="修改首页配置"></a>修改首页配置</h4><p>我们还可以在首页加上一些简介，修改语言等；这个是修改根目录下的 <code>_config.yml</code> 文件</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-d7a58073cbc66a17.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="首页.png"></p>
-<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><h4 id="新建仓库"><a href="#新建仓库" class="headerlink" title="新建仓库"></a>新建仓库</h4><p>现在博客已经孵化出来了尝鲜版，是时候部署上去体验了；一听部署，是不是就需要服务器与域名啊，完了我啥也没有；没关系，全球最大的同性交友网站 <code>github</code> 就是你最好的选择。首先，你需要有个一个 <code>github</code> 账号（如果没有就申请一个），然后新建一个仓库，这个仓库的名字一定要和你  <code>github</code> 账号相同。比如我的 <code>github</code>  叫 <code>cc616</code>（不是昵称），那么就需要建一个仓库名为 <code>cc616.github.io</code>，这样仓库就建好了。接着你需要修改该仓库的设置</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3f9b01437ee00084.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="点击设置.png"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-cf9f66a2f52f6d8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置.png"></p>
-<p>这样你就可以通过 <a href="https://cc616.github.io/">https://cc616.github.io/</a>访问你的网站了</p>
-<h4 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h4><p>仓库建好了，我们需要新加一个包</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
-
-<p>修改 <code>_config.yml</code> 里面的部署配置</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-81f8ffdea7ab4e8e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="部署.png"></p>
-<p>这样我们每次新增了文章后，就可以使用命令 <code>hexo d</code> 一键部署到GitHub Pages 上了</p>
-<h3 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h3><h4 id="图片显示不出来"><a href="#图片显示不出来" class="headerlink" title="图片显示不出来"></a>图片显示不出来</h4><p>你的图片在其他网站都能显示，但是你放在这里就显示失败，可能就需要在文章开头加上</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot; /&gt;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-db40af341bb68aae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图片显示问题.png"></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><code>hexo</code> 搭建博客真的是简单方便，一路下来我也就花了一天不到的时间，接下来就是往里面填充自己累积起来的知识了。其实这篇文章早在两年前就该写了，但是自己觉得这么简单，没有什么好记录。最近重新捡起写博客，才发现自己的搭的blog早已不知道在哪里了，网站上也只有那么两篇文章，说来也惭愧。正好自己重新搭建了，所以就把记录下来了，希望对你有用。不过这个有个缺点就是你需要自己的图床，用七牛云搭建一个也很简单，我曾经也搭建过，改天再写出来吧。如果你嫌麻烦，可以使用网上一些现成的，也可以像我一般把文章写在简书上，既可以提高文章宣传渠道，也可以有图床啦🤦‍♀️</p>
-]]></content>
-      <categories>
-        <category>Front-end</category>
-      </categories>
-      <tags>
-        <tag>js</tag>
-        <tag>blog</tag>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>

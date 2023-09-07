@@ -428,4 +428,17 @@
         <tag>redux</tag>
       </tags>
   </entry>
+  <entry>
+    <title>vitepress轻量级blog搭建</title>
+    <url>/2023/09/07/vite-blog/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Front-end</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>blog</tag>
+        <tag>vite</tag>
+      </tags>
+  </entry>
 </search>

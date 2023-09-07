@@ -1,82 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>docker入门之mysql</title>
-    <url>/2020/05/21/docker-mysql/</url>
-    <content><![CDATA[<meta name="referrer" content="no-referrer" />
-
-<p>docker火了那么久，自己在平时也常常听别人说docker怎么怎么样（假装能听懂的样子），后来还是决定自己撸起袖子就开干，因为自己平时也有练习一些小项目，断断续续的，当时解决了，后来隔断时间不用就又忘记了，俗话说好记性不如烂笔头，这次就把实践的全部记下来了，以防未来又忘记了（🤦‍♀️）</p>
-<h3 id="准备步骤"><a href="#准备步骤" class="headerlink" title="准备步骤"></a>准备步骤</h3><h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 <code>docker</code></h4><p>你要用docker，那么三部曲无外乎就是安装，编码，运行，所以我们首先来安装 <code>docker</code>。安装 <code>docker</code> 有很多种方式，网上教程也是五花八门；这里就跳过，毕竟网上一大把，贴一个菜鸟的<a href="https://www.runoob.com/docker/macos-docker-install.html">教程</a><br><code>docker</code> 安装好了，就可以使用简单的命令去查看了；常用的有：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker images  // 查看当前本地镜像</span><br><span class="line">docker pull imagename  // 获取一个新镜像</span><br><span class="line">docker search imagename  // 查找一个镜像</span><br><span class="line">docker rmi images-id  // 删除一个镜像</span><br><span class="line">docker image prune --force --all  // 删除所有不使用的镜像</span><br><span class="line">docker ps -a // 查看容器</span><br><span class="line">docker rm container-id // 删除容器</span><br><span class="line">docker stop container-id // 停止容器</span><br></pre></td></tr></table></figure>
-<p>当然还有很多 <code>docker build</code>、<code>docker run</code> 等命令，可以去查阅其具体用法</p>
-<h4 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h4><p><code>docker</code> 安装好了，我们使用命令去获取一个 <code>mysql</code> 的镜像</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker pull mysql:5.6</span><br></pre></td></tr></table></figure>
-<p><em>note</em><br><code>:5.6</code>：表示版本<br>这个时候我们使用查看命令就可以看到该镜像已经在本地了<br><img src="https://upload-images.jianshu.io/upload_images/9217526-88f709f1aaf21113.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查看镜像.png"></p>
-<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p><code>docker</code> 安装好了，镜像也获取了，那么现在就可以基于该镜像起一个容器了</p>
-<h4 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -itd --name some-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:5.6</span><br></pre></td></tr></table></figure>
-<p><em>note</em>：</p>
-<ol>
-<li><code>-itd</code>: <code>-i</code> 以交互模式运行容器，通常与 <code>-t</code> 同时使用；<code>-t</code> 为容器重新分配一个伪输入终端，通常与 <code>-i</code> 同时使用；<code>-d</code> 后台运行容器，并返回容器ID</li>
-<li><code>--name [name]</code>：容器名称</li>
-<li><code>-p 3306:3306</code> ：映射容器服务的 <code>3306</code> 端口到宿主机的 <code>3306</code> 端口，外部主机可以直接通过 <code>宿主机ip:3306</code> 访问到 <code>mysql</code> 的服务。</li>
-<li><code>-e MYSQL_ROOT_PASSWORD=my-secret-pw</code>：设置 <code>mysql</code> 服务 <code>root</code> 用户的密码。<br>这个时候我们使用查看容器命令，就可以看见该容器已经运行起来了</li>
-<li><code>-d mysql:[version]</code>：这里指基于哪个版本的镜像来生成容器</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-a1f30260513bac74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查看容器.png"></p>
-<h4 id="进入实例"><a href="#进入实例" class="headerlink" title="进入实例"></a>进入实例</h4><p>容器已经运行起来了，我们就可以使用命令进入到实例里</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker exec -it container-name bash</span><br></pre></td></tr></table></figure>
-<p>然后输入  <code>mysql -uroot -p</code> 输入我们刚刚设置的密码，就能正常操作数据库了</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-d131d67be14cd0a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="数据库.png"></p>
-<p>这样我们就基于官方 <code>mysql</code> 镜像，运行起了一个数据库实例，我们也可以使用其他数据库客户端去连接该数据库，不过如果你是基于最新的数据库创建的实例，连接可能会失败，说找不到<code>image not found</code>，那么你可能需要进入 <code>mysql</code> 实例去修改下密码</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;%&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;root&#x27;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="数据初始化"><a href="#数据初始化" class="headerlink" title="数据初始化"></a>数据初始化</h3><p>虽然上面我们已经生成了数据库实例，但是在实际中，我们希望在创建实例的过程中就能初始化我们写好的 <code>sql</code> 脚本，刚好 <code>mysql</code> 的官方镜像可以支持在容器启动的时候自动执行指定的 <code>sql</code> 脚本或者 <code>shell</code> 脚本，我们能看见官方镜像中 <code>Dockerfile</code> 部分代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">COPY docker-entrypoint.sh /usr/local/bin/</span><br><span class="line">RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat</span><br><span class="line">ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]</span><br><span class="line"></span><br><span class="line">EXPOSE 3306</span><br><span class="line">CMD [&quot;mysqld&quot;]</span><br></pre></td></tr></table></figure>
-
-<p>很明显里面已经设定了 <code>ENTRYPOINT</code>，会调用 <code>/entrypoint.sh</code> 这个脚本，脚本其中一段内容如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo</span><br><span class="line">  for f in /docker-entrypoint-initdb.d/*; do</span><br><span class="line">  case &quot;$f&quot; in</span><br><span class="line">    *.sh)     echo &quot;$0: running $f&quot;; . &quot;$f&quot; ;;</span><br><span class="line">    *.sql)    echo &quot;$0: running $f&quot;; &quot;$&#123;mysql[@]&#125;&quot; &lt; &quot;$f&quot;; echo ;;</span><br><span class="line">    *.sql.gz) echo &quot;$0: running $f&quot;; gunzip -c &quot;$f&quot; | &quot;$&#123;mysql[@]&#125;&quot;; echo ;;</span><br><span class="line">    *)        echo &quot;$0: ignoring $f&quot; ;;</span><br><span class="line">  esac</span><br><span class="line">  echo</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<p>说的是会遍历 <code>docker-entrypoint-initdb.d</code> 目录下所有的 <code>.sh</code> 和 <code>.sql</code> 后缀的文件并执行。所以我们的思路是将数据库初始化脚本拷贝到 <code>docker-entrypoint-initdb.d</code> 目录下。那么接下来我们就编写 <code>Dockerfile</code> 文件</p>
-<ul>
-<li><p><code>Dockerfile</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#基础镜像使用 mysql:5.6</span><br><span class="line">FROM mysql:5.6</span><br><span class="line"></span><br><span class="line">#作者</span><br><span class="line">MAINTAINER cc &lt;813659813@qq.com&gt;</span><br><span class="line"></span><br><span class="line">#定义工作目录</span><br><span class="line">ENV WORK_PATH /usr/local/work</span><br><span class="line"></span><br><span class="line">#定义会被容器自动执行的目录</span><br><span class="line">ENV AUTO_RUN_DIR /docker-entrypoint-initdb.d</span><br><span class="line"></span><br><span class="line">#定义sql文件名</span><br><span class="line">ENV FILE_0 init_table.sql </span><br><span class="line">ENV FILE_1 init_data.sql</span><br><span class="line"></span><br><span class="line">#定义shell文件名</span><br><span class="line">ENV INSTALL_DB_SHELL init_db.sh</span><br><span class="line"></span><br><span class="line">#创建文件夹</span><br><span class="line">RUN mkdir -p $WORK_PATH</span><br><span class="line"></span><br><span class="line">#把数据库初始化数据的文件复制到工作目录下</span><br><span class="line">COPY ./$FILE_0 $WORK_PATH/</span><br><span class="line">COPY ./$FILE_1 $WORK_PATH/</span><br><span class="line"></span><br><span class="line">#把要执行的sql文件放到/docker-entrypoint-initdb.d/目录下，容器会自动执行这个sql</span><br><span class="line">COPY ./$INSTALL_DB_SHELL $AUTO_RUN_DIR/</span><br><span class="line"></span><br><span class="line">#给执行文件增加可执行权限</span><br><span class="line">RUN chmod a+x $AUTO_RUN_DIR/$INSTALL_DB_SQL</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>init_db.sh</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">mysql -uroot -p$MYSQL_ROOT_PASSWORD &lt;&lt; EOF</span><br><span class="line">source $WORK_PATH/$FILE_0;</span><br><span class="line">source $WORK_PATH/$FILE_1;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>init_table.sql</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE IF NOT EXISTS test;</span><br><span class="line"></span><br><span class="line">use test;</span><br><span class="line"></span><br><span class="line">CREATE TABLE IF NOT EXISTS user (</span><br><span class="line">  id INT NOT NULL AUTO_INCREMENT,</span><br><span class="line">  account VARCHAR(32) NOT NULL,</span><br><span class="line">  password VARCHAR(32) NOT NULL,</span><br><span class="line">  openId VARCHAR(100) DEFAULT NULL,</span><br><span class="line">  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,</span><br><span class="line">  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,</span><br><span class="line">  PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>init_data.sql</code></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO user (account, password) values (&#x27;admin&#x27;, &#x27;123456&#x27;);</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="生成镜像"><a href="#生成镜像" class="headerlink" title="生成镜像"></a>生成镜像</h4><p>文件编写好了，我们就能基于该 <code>Dockerfile</code> 构建一个镜像</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker build -t init_mysql .</span><br></pre></td></tr></table></figure>
-<p><em>note</em>:  </p>
-<ol>
-<li><code>-t </code>：镜像名，可跟上版本，eg <code>init_mysql:0.0.1</code></li>
-<li><code>.</code>： 表示 <code>Dockerfile</code> 在当前路径下</li>
-<li>更多命令可以使用 docker build –help 查看<br>这时就能查看到我们刚刚生成了镜像了</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-f90c4c21ba809398.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="镜像.png"></p>
-<h4 id="运行容器-1"><a href="#运行容器-1" class="headerlink" title="运行容器"></a>运行容器</h4><p>镜像生成后，我们就可以去运行一个容器了</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -itd --name demo-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d test_mysql</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-4aa28b1cee38138e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="容器.png"></p>
-<p>我们进入实例就可以看见刚刚初始化好的表以及数据</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3a6753961f920077.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="数据库.png"></p>
-<p>当然也可以使用客户端连接，同样也能看见<br><img src="https://upload-images.jianshu.io/upload_images/9217526-51b9b8e6b888ad29.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="客户端.png"></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>好了，恭喜你到此，折腾半天后，可以在 <code>docker</code> 里面放肆的使用数据库。人生也不过如此，在于折腾，以及折腾后的成功，心情也会很愉快。尽管是搬砖，但也是自己实际动手操作过。我是一名搬砖工，专注搬砖，谢谢，附上<a href="https://github.com/cc616/docker-demo/tree/master/init-db">源码</a>吧，如需请自取（尽管它很简单）</p>
-]]></content>
-      <categories>
-        <category>Docker</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-        <tag>mysql</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>手把手的教你搭建hexo的小白blog</title>
     <url>/2020/05/22/hexo-blog/</url>
     <content><![CDATA[<meta name="referrer" content="no-referrer" />
@@ -170,6 +94,82 @@
         <tag>js</tag>
         <tag>blog</tag>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker入门之mysql</title>
+    <url>/2020/05/21/docker-mysql/</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer" />
+
+<p>docker火了那么久，自己在平时也常常听别人说docker怎么怎么样（假装能听懂的样子），后来还是决定自己撸起袖子就开干，因为自己平时也有练习一些小项目，断断续续的，当时解决了，后来隔断时间不用就又忘记了，俗话说好记性不如烂笔头，这次就把实践的全部记下来了，以防未来又忘记了（🤦‍♀️）</p>
+<h3 id="准备步骤"><a href="#准备步骤" class="headerlink" title="准备步骤"></a>准备步骤</h3><h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 <code>docker</code></h4><p>你要用docker，那么三部曲无外乎就是安装，编码，运行，所以我们首先来安装 <code>docker</code>。安装 <code>docker</code> 有很多种方式，网上教程也是五花八门；这里就跳过，毕竟网上一大把，贴一个菜鸟的<a href="https://www.runoob.com/docker/macos-docker-install.html">教程</a><br><code>docker</code> 安装好了，就可以使用简单的命令去查看了；常用的有：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker images  // 查看当前本地镜像</span><br><span class="line">docker pull imagename  // 获取一个新镜像</span><br><span class="line">docker search imagename  // 查找一个镜像</span><br><span class="line">docker rmi images-id  // 删除一个镜像</span><br><span class="line">docker image prune --force --all  // 删除所有不使用的镜像</span><br><span class="line">docker ps -a // 查看容器</span><br><span class="line">docker rm container-id // 删除容器</span><br><span class="line">docker stop container-id // 停止容器</span><br></pre></td></tr></table></figure>
+<p>当然还有很多 <code>docker build</code>、<code>docker run</code> 等命令，可以去查阅其具体用法</p>
+<h4 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h4><p><code>docker</code> 安装好了，我们使用命令去获取一个 <code>mysql</code> 的镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker pull mysql:5.6</span><br></pre></td></tr></table></figure>
+<p><em>note</em><br><code>:5.6</code>：表示版本<br>这个时候我们使用查看命令就可以看到该镜像已经在本地了<br><img src="https://upload-images.jianshu.io/upload_images/9217526-88f709f1aaf21113.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查看镜像.png"></p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p><code>docker</code> 安装好了，镜像也获取了，那么现在就可以基于该镜像起一个容器了</p>
+<h4 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -itd --name some-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:5.6</span><br></pre></td></tr></table></figure>
+<p><em>note</em>：</p>
+<ol>
+<li><code>-itd</code>: <code>-i</code> 以交互模式运行容器，通常与 <code>-t</code> 同时使用；<code>-t</code> 为容器重新分配一个伪输入终端，通常与 <code>-i</code> 同时使用；<code>-d</code> 后台运行容器，并返回容器ID</li>
+<li><code>--name [name]</code>：容器名称</li>
+<li><code>-p 3306:3306</code> ：映射容器服务的 <code>3306</code> 端口到宿主机的 <code>3306</code> 端口，外部主机可以直接通过 <code>宿主机ip:3306</code> 访问到 <code>mysql</code> 的服务。</li>
+<li><code>-e MYSQL_ROOT_PASSWORD=my-secret-pw</code>：设置 <code>mysql</code> 服务 <code>root</code> 用户的密码。<br>这个时候我们使用查看容器命令，就可以看见该容器已经运行起来了</li>
+<li><code>-d mysql:[version]</code>：这里指基于哪个版本的镜像来生成容器</li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-a1f30260513bac74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查看容器.png"></p>
+<h4 id="进入实例"><a href="#进入实例" class="headerlink" title="进入实例"></a>进入实例</h4><p>容器已经运行起来了，我们就可以使用命令进入到实例里</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker exec -it container-name bash</span><br></pre></td></tr></table></figure>
+<p>然后输入  <code>mysql -uroot -p</code> 输入我们刚刚设置的密码，就能正常操作数据库了</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-d131d67be14cd0a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="数据库.png"></p>
+<p>这样我们就基于官方 <code>mysql</code> 镜像，运行起了一个数据库实例，我们也可以使用其他数据库客户端去连接该数据库，不过如果你是基于最新的数据库创建的实例，连接可能会失败，说找不到<code>image not found</code>，那么你可能需要进入 <code>mysql</code> 实例去修改下密码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;%&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;root&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据初始化"><a href="#数据初始化" class="headerlink" title="数据初始化"></a>数据初始化</h3><p>虽然上面我们已经生成了数据库实例，但是在实际中，我们希望在创建实例的过程中就能初始化我们写好的 <code>sql</code> 脚本，刚好 <code>mysql</code> 的官方镜像可以支持在容器启动的时候自动执行指定的 <code>sql</code> 脚本或者 <code>shell</code> 脚本，我们能看见官方镜像中 <code>Dockerfile</code> 部分代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">COPY docker-entrypoint.sh /usr/local/bin/</span><br><span class="line">RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat</span><br><span class="line">ENTRYPOINT [&quot;docker-entrypoint.sh&quot;]</span><br><span class="line"></span><br><span class="line">EXPOSE 3306</span><br><span class="line">CMD [&quot;mysqld&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>很明显里面已经设定了 <code>ENTRYPOINT</code>，会调用 <code>/entrypoint.sh</code> 这个脚本，脚本其中一段内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo</span><br><span class="line">  for f in /docker-entrypoint-initdb.d/*; do</span><br><span class="line">  case &quot;$f&quot; in</span><br><span class="line">    *.sh)     echo &quot;$0: running $f&quot;; . &quot;$f&quot; ;;</span><br><span class="line">    *.sql)    echo &quot;$0: running $f&quot;; &quot;$&#123;mysql[@]&#125;&quot; &lt; &quot;$f&quot;; echo ;;</span><br><span class="line">    *.sql.gz) echo &quot;$0: running $f&quot;; gunzip -c &quot;$f&quot; | &quot;$&#123;mysql[@]&#125;&quot;; echo ;;</span><br><span class="line">    *)        echo &quot;$0: ignoring $f&quot; ;;</span><br><span class="line">  esac</span><br><span class="line">  echo</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>说的是会遍历 <code>docker-entrypoint-initdb.d</code> 目录下所有的 <code>.sh</code> 和 <code>.sql</code> 后缀的文件并执行。所以我们的思路是将数据库初始化脚本拷贝到 <code>docker-entrypoint-initdb.d</code> 目录下。那么接下来我们就编写 <code>Dockerfile</code> 文件</p>
+<ul>
+<li><p><code>Dockerfile</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#基础镜像使用 mysql:5.6</span><br><span class="line">FROM mysql:5.6</span><br><span class="line"></span><br><span class="line">#作者</span><br><span class="line">MAINTAINER cc &lt;813659813@qq.com&gt;</span><br><span class="line"></span><br><span class="line">#定义工作目录</span><br><span class="line">ENV WORK_PATH /usr/local/work</span><br><span class="line"></span><br><span class="line">#定义会被容器自动执行的目录</span><br><span class="line">ENV AUTO_RUN_DIR /docker-entrypoint-initdb.d</span><br><span class="line"></span><br><span class="line">#定义sql文件名</span><br><span class="line">ENV FILE_0 init_table.sql </span><br><span class="line">ENV FILE_1 init_data.sql</span><br><span class="line"></span><br><span class="line">#定义shell文件名</span><br><span class="line">ENV INSTALL_DB_SHELL init_db.sh</span><br><span class="line"></span><br><span class="line">#创建文件夹</span><br><span class="line">RUN mkdir -p $WORK_PATH</span><br><span class="line"></span><br><span class="line">#把数据库初始化数据的文件复制到工作目录下</span><br><span class="line">COPY ./$FILE_0 $WORK_PATH/</span><br><span class="line">COPY ./$FILE_1 $WORK_PATH/</span><br><span class="line"></span><br><span class="line">#把要执行的sql文件放到/docker-entrypoint-initdb.d/目录下，容器会自动执行这个sql</span><br><span class="line">COPY ./$INSTALL_DB_SHELL $AUTO_RUN_DIR/</span><br><span class="line"></span><br><span class="line">#给执行文件增加可执行权限</span><br><span class="line">RUN chmod a+x $AUTO_RUN_DIR/$INSTALL_DB_SQL</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>init_db.sh</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">mysql -uroot -p$MYSQL_ROOT_PASSWORD &lt;&lt; EOF</span><br><span class="line">source $WORK_PATH/$FILE_0;</span><br><span class="line">source $WORK_PATH/$FILE_1;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>init_table.sql</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE IF NOT EXISTS test;</span><br><span class="line"></span><br><span class="line">use test;</span><br><span class="line"></span><br><span class="line">CREATE TABLE IF NOT EXISTS user (</span><br><span class="line">  id INT NOT NULL AUTO_INCREMENT,</span><br><span class="line">  account VARCHAR(32) NOT NULL,</span><br><span class="line">  password VARCHAR(32) NOT NULL,</span><br><span class="line">  openId VARCHAR(100) DEFAULT NULL,</span><br><span class="line">  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,</span><br><span class="line">  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,</span><br><span class="line">  PRIMARY KEY (id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>init_data.sql</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO user (account, password) values (&#x27;admin&#x27;, &#x27;123456&#x27;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="生成镜像"><a href="#生成镜像" class="headerlink" title="生成镜像"></a>生成镜像</h4><p>文件编写好了，我们就能基于该 <code>Dockerfile</code> 构建一个镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker build -t init_mysql .</span><br></pre></td></tr></table></figure>
+<p><em>note</em>:  </p>
+<ol>
+<li><code>-t </code>：镜像名，可跟上版本，eg <code>init_mysql:0.0.1</code></li>
+<li><code>.</code>： 表示 <code>Dockerfile</code> 在当前路径下</li>
+<li>更多命令可以使用 docker build –help 查看<br>这时就能查看到我们刚刚生成了镜像了</li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-f90c4c21ba809398.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="镜像.png"></p>
+<h4 id="运行容器-1"><a href="#运行容器-1" class="headerlink" title="运行容器"></a>运行容器</h4><p>镜像生成后，我们就可以去运行一个容器了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -itd --name demo-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -d test_mysql</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-4aa28b1cee38138e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="容器.png"></p>
+<p>我们进入实例就可以看见刚刚初始化好的表以及数据</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9217526-3a6753961f920077.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="数据库.png"></p>
+<p>当然也可以使用客户端连接，同样也能看见<br><img src="https://upload-images.jianshu.io/upload_images/9217526-51b9b8e6b888ad29.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="客户端.png"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>好了，恭喜你到此，折腾半天后，可以在 <code>docker</code> 里面放肆的使用数据库。人生也不过如此，在于折腾，以及折腾后的成功，心情也会很愉快。尽管是搬砖，但也是自己实际动手操作过。我是一名搬砖工，专注搬砖，谢谢，附上<a href="https://github.com/cc616/docker-demo/tree/master/init-db">源码</a>吧，如需请自取（尽管它很简单）</p>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>mysql</tag>
       </tags>
   </entry>
   <entry>
